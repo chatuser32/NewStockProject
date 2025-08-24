@@ -39,6 +39,33 @@ namespace App.Services.Auth
             return (true, user, roles, null);
         }
 
+        public async Task<(bool Success, int? UserId, string? Error)> RegisterAsync(string username, string fullName, string email, string password)
+        {
+            var exists = await userRepository.Where(u => u.Username == username || u.Email == email).AnyAsync();
+            if (exists)
+                return (false, null, "Kullanıcı adı veya e-posta zaten kayıtlı.");
+
+            using var rng = RandomNumberGenerator.Create();
+            var salt = new byte[16];
+            rng.GetBytes(salt);
+
+            using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
+            var hash = pbkdf2.GetBytes(32);
+
+            var user = new User
+            {
+                Username = username,
+                FullName = fullName,
+                Email = email,
+                PasswordSalt = salt,
+                PasswordHash = hash,
+                IsActive = true,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            await userRepository.AddAsync(user);
+            return (true, user.Id, null);
+        }
         private static bool VerifyPassword(string password, byte[] salt, byte[] hash)
         {
             using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);

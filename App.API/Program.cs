@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddRepositories(builder.Configuration)
                 .AddServices(builder.Configuration);
+// Seed ekle
+builder.Services.AddHostedService<App.API.Startup.SeedHostedService>();
 
 // JWT Options
 builder.Services.Configure<TokenOptions>(builder.Configuration.GetSection("Jwt"));
