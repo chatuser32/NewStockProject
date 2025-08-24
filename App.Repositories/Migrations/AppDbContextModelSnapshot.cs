@@ -427,16 +427,17 @@ namespace App.Repositories.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainGroupId");
 
                     b.HasIndex("SubGroupId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("CompanyId", "Code")
+                        .IsUnique();
+
+                    b.HasIndex("CompanyId", "Name")
+                        .IsUnique();
 
                     b.ToTable("StockCards", (string)null);
                 });
@@ -524,6 +525,12 @@ namespace App.Repositories.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(256)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(128)");
 
                     b.Property<string>("Username")
                         .IsRequired()

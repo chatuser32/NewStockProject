@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace App.Repositories.StockCards
@@ -19,8 +19,12 @@ namespace App.Repositories.StockCards
                    .IsRequired()
                    .HasMaxLength(50);
 
-            builder.HasIndex(bc => bc.Code)
-               .IsUnique();
+            // Unique indexes scoped by Company
+            builder.HasIndex(sc => new { sc.CompanyId, sc.Name })
+                   .IsUnique();
+
+            builder.HasIndex(sc => new { sc.CompanyId, sc.Code })
+                   .IsUnique();
 
             builder.Property(sc => sc.Type)
                    .IsRequired()
