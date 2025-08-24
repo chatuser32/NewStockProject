@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace App.Repositories.Users
@@ -22,6 +22,12 @@ namespace App.Repositories.Users
             builder.Property(u => u.Email)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.Property(u => u.PasswordHash)
+                .HasColumnType("varbinary(256)");
+
+            builder.Property(u => u.PasswordSalt)
+                .HasColumnType("varbinary(128)");
 
             builder.Property(u => u.IsActive)
                 .HasDefaultValue(true);  // Varsayılan olarak aktif
