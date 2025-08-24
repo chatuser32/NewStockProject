@@ -31,6 +31,13 @@ namespace App.API.Controllers
             }
             return Ok(new { message = "Rol atandı." });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await roleRepository.GetAll().Select(r => r.Name).ToListAsync();
+            return Ok(roles);
+        }
     }
 }
 
